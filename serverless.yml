@@ -11,6 +11,8 @@ provider:
     role: arn:aws:iam::642348299713:role/LabRole
   environment:
     TABLE_NAME: ${sls:stage}-t_comentarios
+    # Añadimos la variable de entorno para el bucket dependiente del stage
+    BUCKET_NAME: ${sls:stage}-bucket-ingesta-comentarios-r3d
 
 functions:
   crear:
@@ -40,3 +42,9 @@ resources:
             KeyType: RANGE
         # Set the capacity to auto-scale
         BillingMode: PAY_PER_REQUEST
+
+    # Nuevo recurso: Bucket S3 de Ingesta
+    BucketIngesta:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.BUCKET_NAME}
